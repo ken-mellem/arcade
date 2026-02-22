@@ -23,15 +23,14 @@ export const GAMES: GameEntry[] = [
     status: "available",
     controls: "← → rotate ↑  drop ↓  pause P",
   },
-  // Placeholder entries — uncomment and implement when ready
-  // {
-  //   id: 'snake',
-  //   title: 'SNAKE',
-  //   description: 'Eat, grow, and don\'t bite yourself.',
-  //   route: '/games/snake',
-  //   accentColor: 'var(--color-neon-green)',
-  //   glowVar: '--border-glow-green',
-  //   status: 'coming-soon',
-  //   controls: '← → ↑ ↓',
-  // },
+  {
+    id: 'snake',
+    title: 'SNAKE',
+    description: 'Eat, grow, and don\'t bite yourself. Speed up with every meal.',
+    route: '/games/snake',
+    accentColor: 'var(--color-neon-green)',
+    glowVar: '--border-glow-green',
+    status: 'available',
+    controls: '← → ↑ ↓  or  WASD  pause P',
+  },
 ];

@@ -6,6 +6,7 @@ Chronological log of all feature requests and their implementation status.
 | --- | ---------- | ------------ | ------ | ------------------------------------ |
 | 1   | 2026-02-22 | Landing Page | ✅ Done | [LANDING_PAGE.md](./LANDING_PAGE.md) |
 | 2   | 2026-02-22 | Tetris       | ✅ Done | [TETRIS.md](./TETRIS.md)             |
+| 3   | 2026-02-22 | Snake        | ✅ Done | [SNAKE.md](./SNAKE.md)               |
 
 ---
 

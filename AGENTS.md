@@ -82,16 +82,16 @@ All commits MUST use the [Conventional Commits](https://www.conventionalcommits.
 <type>(<optional scope>): <short description>
 ```
 
-| Type | Use for |
-|---|---|
-| `feat` | New feature or game |
-| `fix` | Bug fix |
-| `chore` | Tooling, deps, config, cleanup |
-| `style` | CSS / visual-only changes |
+| Type       | Use for                              |
+| ---------- | ------------------------------------ |
+| `feat`     | New feature or game                  |
+| `fix`      | Bug fix                              |
+| `chore`    | Tooling, deps, config, cleanup       |
+| `style`    | CSS / visual-only changes            |
 | `refactor` | Restructure without behaviour change |
-| `docs` | Documentation only (plan/, feature/) |
-| `perf` | Performance improvement |
-| `test` | Adding or fixing tests |
+| `docs`     | Documentation only (plan/, feature/) |
+| `perf`     | Performance improvement              |
+| `test`     | Adding or fixing tests               |
 
 Examples:
 ```

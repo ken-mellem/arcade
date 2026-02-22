@@ -77,18 +77,19 @@ All commits MUST follow the [Conventional Commits](https://www.conventionalcommi
 <type>(<optional scope>): <short description>
 ```
 
-| Type | When to use |
-|---|---|
-| `feat` | New feature or game |
-| `fix` | Bug fix |
-| `chore` | Tooling, deps, config, cleanup |
-| `style` | CSS / visual-only changes |
-| `refactor` | Code restructure, no behaviour change |
-| `docs` | Documentation only (plan/, feature/, README) |
-| `perf` | Performance improvement |
-| `test` | Adding or fixing tests |
+| Type       | When to use                                  |
+| ---------- | -------------------------------------------- |
+| `feat`     | New feature or game                          |
+| `fix`      | Bug fix                                      |
+| `chore`    | Tooling, deps, config, cleanup               |
+| `style`    | CSS / visual-only changes                    |
+| `refactor` | Code restructure, no behaviour change        |
+| `docs`     | Documentation only (plan/, feature/, README) |
+| `perf`     | Performance improvement                      |
+| `test`     | Adding or fixing tests                       |
 
 Examples:
+
 ```
 feat(tetris): add 7-bag random piece generator
 fix(landing): correct card hover glow on Safari
@@ -105,6 +106,7 @@ Branches follow the same type prefix as commits:
 ```
 
 Examples:
+
 ```
 feat/snake-game
 feat/tetris-high-scores

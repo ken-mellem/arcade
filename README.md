@@ -7,11 +7,10 @@ Pick a game from the neon-lit landing page and play it in a CRT-framed canvas �
 
 ## Games
 
-| Game | Status | Controls |
-|---|---|---|
+| Game   | Status      | Controls                                                                                           |
+| ------ | ----------- | -------------------------------------------------------------------------------------------------- |
 | Tetris | ✅ Available | `← →` move · `↑` rotate · `↓` soft drop · `Space` hard drop · `C` hold · `P` pause · `Enter` start |
-
-More games coming soon.
+| Snake  | ✅ Available | `← → ↑ ↓` or `WASD` move · `P` pause · `Enter` start |
 
 ---
 
@@ -44,14 +43,14 @@ npm run preview    # Serve the production build locally
 
 ## Tech Stack
 
-| Layer | Choice |
-|---|---|
-| Build / Dev server | Vite 5 |
-| UI Framework | React 18 + TypeScript |
-| Routing | React Router v6 |
-| Game rendering | HTML5 Canvas API |
-| Styling | CSS Modules + CSS custom properties |
-| Font | Press Start 2P (Google Fonts) |
+| Layer              | Choice                              |
+| ------------------ | ----------------------------------- |
+| Build / Dev server | Vite 5                              |
+| UI Framework       | React 18 + TypeScript               |
+| Routing            | React Router v6                     |
+| Game rendering     | HTML5 Canvas API                    |
+| Styling            | CSS Modules + CSS custom properties |
+| Font               | Press Start 2P (Google Fonts)       |
 
 ---
 
@@ -102,16 +101,16 @@ Full checklist in [AGENTS.md](AGENTS.md).
 <type>(<optional scope>): <short description>
 ```
 
-| Type | When to use |
-|---|---|
-| `feat` | New feature or game |
-| `fix` | Bug fix |
-| `chore` | Tooling, deps, config, cleanup |
-| `style` | CSS / visual-only changes |
+| Type       | When to use                           |
+| ---------- | ------------------------------------- |
+| `feat`     | New feature or game                   |
+| `fix`      | Bug fix                               |
+| `chore`    | Tooling, deps, config, cleanup        |
+| `style`    | CSS / visual-only changes             |
 | `refactor` | Code restructure, no behaviour change |
-| `docs` | Documentation only |
-| `perf` | Performance improvement |
-| `test` | Adding or fixing tests |
+| `docs`     | Documentation only                    |
+| `perf`     | Performance improvement               |
+| `test`     | Adding or fixing tests                |
 
 ### Branch Naming
 
