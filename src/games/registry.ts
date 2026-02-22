@@ -1,0 +1,37 @@
+export interface GameEntry {
+  id: string;
+  title: string;
+  description: string;
+  route: string;
+  /** CSS color used for the card accent / preview background */
+  accentColor: string;
+  /** Neon CSS var name for border glow matching the accent */
+  glowVar: string;
+  status: "available" | "coming-soon";
+  /** Short comma-separated list of controls shown on the card */
+  controls: string;
+}
+
+export const GAMES: GameEntry[] = [
+  {
+    id: "tetris",
+    title: "TETRIS",
+    description: "Stack falling tetrominoes, clear lines, survive the speed.",
+    route: "/games/tetris",
+    accentColor: "var(--color-neon-cyan)",
+    glowVar: "--border-glow-cyan",
+    status: "available",
+    controls: "← → rotate ↑  drop ↓  pause P",
+  },
+  // Placeholder entries — uncomment and implement when ready
+  // {
+  //   id: 'snake',
+  //   title: 'SNAKE',
+  //   description: 'Eat, grow, and don\'t bite yourself.',
+  //   route: '/games/snake',
+  //   accentColor: 'var(--color-neon-green)',
+  //   glowVar: '--border-glow-green',
+  //   status: 'coming-soon',
+  //   controls: '← → ↑ ↓',
+  // },
+];
