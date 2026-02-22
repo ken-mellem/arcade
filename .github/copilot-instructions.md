@@ -67,6 +67,52 @@ src/games/<gameName>/
 - `src/games/` — one folder per game + `registry.ts`.
 - `src/styles/` — global CSS only (`globals.css`, `theme.css`).
 
+## Git Conventions
+
+### Commit Messages — Conventional Commits
+
+All commits MUST follow the [Conventional Commits](https://www.conventionalcommits.org/) spec:
+
+```
+<type>(<optional scope>): <short description>
+```
+
+| Type | When to use |
+|---|---|
+| `feat` | New feature or game |
+| `fix` | Bug fix |
+| `chore` | Tooling, deps, config, cleanup |
+| `style` | CSS / visual-only changes |
+| `refactor` | Code restructure, no behaviour change |
+| `docs` | Documentation only (plan/, feature/, README) |
+| `perf` | Performance improvement |
+| `test` | Adding or fixing tests |
+
+Examples:
+```
+feat(tetris): add 7-bag random piece generator
+fix(landing): correct card hover glow on Safari
+chore: upgrade vite to 5.5
+docs(feature): add SNAKE.md feature spec
+```
+
+### Branch Naming
+
+Branches follow the same type prefix as commits:
+
+```
+<type>/<short-kebab-description>
+```
+
+Examples:
+```
+feat/snake-game
+feat/tetris-high-scores
+fix/tetris-rotation-wallkick
+chore/upgrade-dependencies
+refactor/game-registry
+```
+
 ## What to Avoid
 
 - Do NOT add any backend, server, or database tooling.

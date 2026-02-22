@@ -72,6 +72,54 @@ npm run preview      # Preview production build
 
 ---
 
+## Git Conventions
+
+### Commit Messages — Conventional Commits
+
+All commits MUST use the [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+```
+<type>(<optional scope>): <short description>
+```
+
+| Type | Use for |
+|---|---|
+| `feat` | New feature or game |
+| `fix` | Bug fix |
+| `chore` | Tooling, deps, config, cleanup |
+| `style` | CSS / visual-only changes |
+| `refactor` | Restructure without behaviour change |
+| `docs` | Documentation only (plan/, feature/) |
+| `perf` | Performance improvement |
+| `test` | Adding or fixing tests |
+
+Examples:
+```
+feat(tetris): add 7-bag random piece generator
+fix(landing): correct card hover glow on Safari
+chore: upgrade vite to 5.5
+docs(feature): add SNAKE.md feature spec
+```
+
+### Branch Naming
+
+Branches follow the same type prefix as commits:
+
+```
+<type>/<short-kebab-description>
+```
+
+Examples:
+```
+feat/snake-game
+feat/tetris-high-scores
+fix/tetris-rotation-wallkick
+chore/upgrade-dependencies
+refactor/game-registry
+```
+
+---
+
 ## Code Style Quick Reference
 
 ```typescript
