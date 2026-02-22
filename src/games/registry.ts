@@ -24,13 +24,14 @@ export const GAMES: GameEntry[] = [
     controls: "← → rotate ↑  drop ↓  pause P",
   },
   {
-    id: 'snake',
-    title: 'SNAKE',
-    description: 'Eat, grow, and don\'t bite yourself. Speed up with every meal.',
-    route: '/games/snake',
-    accentColor: 'var(--color-neon-green)',
-    glowVar: '--border-glow-green',
-    status: 'available',
-    controls: '← → ↑ ↓  or  WASD  pause P',
+    id: "snake",
+    title: "SNAKE",
+    description:
+      "Eat, grow, and don't bite yourself. Speed up with every meal.",
+    route: "/games/snake",
+    accentColor: "var(--color-neon-green)",
+    glowVar: "--border-glow-green",
+    status: "available",
+    controls: "← → ↑ ↓  or  WASD  pause P",
   },
 ];

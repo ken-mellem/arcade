@@ -10,7 +10,7 @@ Pick a game from the neon-lit landing page and play it in a CRT-framed canvas �
 | Game   | Status      | Controls                                                                                           |
 | ------ | ----------- | -------------------------------------------------------------------------------------------------- |
 | Tetris | ✅ Available | `← →` move · `↑` rotate · `↓` soft drop · `Space` hard drop · `C` hold · `P` pause · `Enter` start |
-| Snake  | ✅ Available | `← → ↑ ↓` or `WASD` move · `P` pause · `Enter` start |
+| Snake  | ✅ Available | `← → ↑ ↓` or `WASD` move · `P` pause · `Enter` start                                               |
 
 ---
 

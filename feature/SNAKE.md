@@ -22,22 +22,22 @@ walls or your own tail. Speed increases with every 5 foods eaten.
 
 ## Controls
 
-| Key | Action |
-|---|---|
-| `← → ↑ ↓` | Change direction |
+| Key       | Action                         |
+| --------- | ------------------------------ |
+| `← → ↑ ↓` | Change direction               |
 | `W A S D` | Change direction (alternative) |
-| `P` | Pause / Resume |
-| `Enter` | Start / Restart |
+| `P`       | Pause / Resume                 |
+| `Enter`   | Start / Restart                |
 
 ## Architecture
 
-| File | Role |
-|---|---|
-| `constants.ts` | Board size, speeds, colors, direction types |
-| `SnakeEngine.ts` | Pure reducer: snake movement, collision, food, scoring |
-| `useSnake.ts` | React hook: RAF loop, keyboard, dispatches actions |
-| `SnakePage.tsx` | Canvas renderer + HUD layout (score, level, length) |
-| `SnakePage.module.css` | Layout + all Snake-specific styles |
+| File                   | Role                                                   |
+| ---------------------- | ------------------------------------------------------ |
+| `constants.ts`         | Board size, speeds, colors, direction types            |
+| `SnakeEngine.ts`       | Pure reducer: snake movement, collision, food, scoring |
+| `useSnake.ts`          | React hook: RAF loop, keyboard, dispatches actions     |
+| `SnakePage.tsx`        | Canvas renderer + HUD layout (score, level, length)    |
+| `SnakePage.module.css` | Layout + all Snake-specific styles                     |
 
 ## Future Enhancements
 - [ ] Persistent high score in `localStorage`.
