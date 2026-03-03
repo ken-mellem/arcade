@@ -6,6 +6,7 @@
   justify-content: center;
   background: var(--color-bg);
   padding: 16px;
+  position: relative;
 }
 
 .layout {
@@ -56,6 +57,13 @@
   font-size: 0.9rem;
   color: var(--color-neon-green);
   text-shadow: var(--glow-green);
+  letter-spacing: 0.05em;
+}
+
+.statValueAlt {
+  font-size: 0.9rem;
+  color: var(--color-neon-yellow);
+  text-shadow: var(--glow-yellow);
   letter-spacing: 0.05em;
 }
 

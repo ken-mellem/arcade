@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useCallback, useRef } from "react";
+import { useReducer, useEffect, useCallback, useRef, useState } from "react";
 import {
   createInitialState,
   tetrisReducer,
@@ -6,6 +6,9 @@ import {
   type TetrisState,
   type TetrisAction,
 } from "./TetrisEngine";
+import { loadScores, isTopScore, addScore } from "../../lib/highScores";
+
+const GAME_ID = "tetris";
 
 interface UseTetrisReturn {
   state: TetrisState;
@@ -13,14 +16,18 @@ interface UseTetrisReturn {
   start: () => void;
   restart: () => void;
   pauseToggle: () => void;
+  pendingScore: number | null;
+  submitInitials: (initials: string) => void;
 }
 
 export function useTetris(): UseTetrisReturn {
-  const [state, dispatch] = useReducer(
-    tetrisReducer,
-    undefined,
-    createInitialState,
+  const [state, dispatch] = useReducer(tetrisReducer, undefined, () =>
+    createInitialState(loadScores(GAME_ID)[0]?.score ?? 0),
   );
+
+  const [pendingScore, setPendingScore] = useState<number | null>(null);
+  const pendingRef = useRef<number | null>(null);
+  pendingRef.current = pendingScore;
 
   // ── Game loop ──────────────────────────────────────────
   const stateRef = useRef(state);
@@ -88,7 +95,8 @@ export function useTetris(): UseTetrisReturn {
         case "Enter": {
           const s = stateRef.current;
           if (s.status === "idle") dispatch({ type: "START" });
-          else if (s.status === "game-over") dispatch({ type: "RESTART" });
+          else if (s.status === "game-over" && pendingRef.current === null)
+            dispatch({ type: "RESTART" });
           break;
         }
       }
@@ -102,5 +110,27 @@ export function useTetris(): UseTetrisReturn {
   const restart = useCallback(() => dispatch({ type: "RESTART" }), []);
   const pauseToggle = useCallback(() => dispatch({ type: "PAUSE_TOGGLE" }), []);
 
-  return { state, dispatch, start, restart, pauseToggle };
+  // Detect qualifying game-over and prompt for initials
+  useEffect(() => {
+    if (state.status === "game-over" && isTopScore(GAME_ID, state.score)) {
+      setPendingScore(state.score);
+    }
+  }, [state.status, state.score]);
+
+  const submitInitials = useCallback((initials: string) => {
+    if (pendingRef.current === null) return;
+    addScore(GAME_ID, pendingRef.current, initials);
+    setPendingScore(null);
+    dispatch({ type: "RESTART" });
+  }, []);
+
+  return {
+    state,
+    dispatch,
+    start,
+    restart,
+    pauseToggle,
+    pendingScore,
+    submitInitials,
+  };
 }

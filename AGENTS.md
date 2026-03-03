@@ -55,8 +55,37 @@ npm run preview      # Preview production build
 - [ ] Create `src/games/<name>/<Name>Page.tsx` + `.module.css`
 - [ ] Register in `src/games/registry.ts`
 - [ ] Add `<Route>` in `src/App.tsx`
-- [ ] Create `feature/<NAME>.md` doc
+- [ ] Wire up the high score system (see `/plan/ARCHITECTURE.md` — _High Scores_ section)
+- [ ] Create `feature/<NAME>.md` doc (use the template below)
 - [ ] Update `feature/INDEX.md`
+
+---
+
+## Feature File Template
+
+Every file in `/feature/` MUST use this header format exactly:
+
+```markdown
+# Feature: <Title>
+
+**Status:** ✅ Implemented | 🚧 In Progress | 💤 Planned
+**Date requested:** YYYY-MM-DD
+**Route:** `/games/<name>`  <!-- use "N/A — <reason>" for cross-cutting features -->
+
+## Summary
+One-paragraph description of what the feature is.
+
+## Rules Implemented / What was built
+...
+
+## Controls  <!-- omit for non-game features -->
+| Key | Action |
+| --- | ------ |
+| ... | ...    |
+```
+
+Do NOT invent alternative title styles (`# GAME NAME — Spec`, `# Game Name`, etc.).
+Always use `# Feature: <Title>`.
 
 ---
 

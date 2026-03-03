@@ -1,4 +1,8 @@
-# SPACE INVADERS — Feature Spec
+# Feature: Space Invaders
+
+**Status:** ✅ Implemented  
+**Date requested:** 2026-03-03  
+**Route:** `/games/space-invaders`
 
 ## Summary
 
@@ -35,7 +39,7 @@ bottom of the screen, defending Earth against rows of descending alien invaders.
 | Bottom (rows 3–4) | 10     |
 | Mystery UFO       | 100    |
 
-High score is tracked in component state for the session.
+High score is persisted in `localStorage` via the shared high score system (see `HIGH_SCORES.md`).
 
 ## Controls
 

@@ -2,13 +2,16 @@
 // Space Invaders — React Hook (game loop + input wiring)
 // ============================================================
 
-import { useReducer, useEffect, useCallback, useRef } from "react";
+import { useReducer, useEffect, useCallback, useRef, useState } from "react";
 import {
   createInitialState,
   spaceInvadersReducer,
   type SpaceInvadersState,
   type SpaceInvadersAction,
 } from "./SpaceInvadersEngine";
+import { loadScores, isTopScore, addScore } from "../../lib/highScores";
+
+const GAME_ID = "space-invaders";
 
 interface UseSpaceInvadersReturn {
   state: SpaceInvadersState;
@@ -17,14 +20,18 @@ interface UseSpaceInvadersReturn {
   restart: () => void;
   nextLevel: () => void;
   pauseToggle: () => void;
+  pendingScore: number | null;
+  submitInitials: (initials: string) => void;
 }
 
 export function useSpaceInvaders(): UseSpaceInvadersReturn {
-  const [state, dispatch] = useReducer(
-    spaceInvadersReducer,
-    undefined,
-    createInitialState,
+  const [state, dispatch] = useReducer(spaceInvadersReducer, undefined, () =>
+    createInitialState(1, loadScores(GAME_ID)[0]?.score ?? 0),
   );
+
+  const [pendingScore, setPendingScore] = useState<number | null>(null);
+  const pendingRef = useRef<number | null>(null);
+  pendingRef.current = pendingScore;
 
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -84,7 +91,8 @@ export function useSpaceInvaders(): UseSpaceInvadersReturn {
         case "Enter": {
           const s = stateRef.current;
           if (s.status === "idle") dispatch({ type: "START" });
-          else if (s.status === "game-over") dispatch({ type: "RESTART" });
+          else if (s.status === "game-over" && pendingRef.current === null)
+            dispatch({ type: "RESTART" });
           else if (s.status === "level-clear") dispatch({ type: "NEXT_LEVEL" });
           break;
         }
@@ -119,5 +127,28 @@ export function useSpaceInvaders(): UseSpaceInvadersReturn {
   const nextLevel = useCallback(() => dispatch({ type: "NEXT_LEVEL" }), []);
   const pauseToggle = useCallback(() => dispatch({ type: "PAUSE_TOGGLE" }), []);
 
-  return { state, dispatch, start, restart, nextLevel, pauseToggle };
+  // Detect qualifying game-over and prompt for initials
+  useEffect(() => {
+    if (state.status === "game-over" && isTopScore(GAME_ID, state.score)) {
+      setPendingScore(state.score);
+    }
+  }, [state.status, state.score]);
+
+  const submitInitials = useCallback((initials: string) => {
+    if (pendingRef.current === null) return;
+    addScore(GAME_ID, pendingRef.current, initials);
+    setPendingScore(null);
+    dispatch({ type: "RESTART" });
+  }, []);
+
+  return {
+    state,
+    dispatch,
+    start,
+    restart,
+    nextLevel,
+    pauseToggle,
+    pendingScore,
+    submitInitials,
+  };
 }

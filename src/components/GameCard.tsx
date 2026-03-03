@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import type { GameEntry } from "../games/registry";
+import { loadScores } from "../lib/highScores";
+import ScoreTable from "./ScoreTable";
 import styles from "./GameCard.module.css";
 
 interface Props {
@@ -8,6 +10,7 @@ interface Props {
 
 export default function GameCard({ game }: Props) {
   const navigate = useNavigate();
+  const entries = loadScores(game.id);
 
   const handlePlay = () => {
     if (game.status === "available") {
@@ -28,8 +31,7 @@ export default function GameCard({ game }: Props) {
       {/* Info area */}
       <div className={styles.info}>
         <h2 className={styles.title}>{game.title}</h2>
-        <p className={styles.description}>{game.description}</p>
-        <p className={styles.controls}>{game.controls}</p>
+        <ScoreTable entries={entries.slice(0, 3)} />
       </div>
 
       {/* CTA */}
@@ -39,7 +41,7 @@ export default function GameCard({ game }: Props) {
         disabled={game.status === "coming-soon"}
         aria-label={`Play ${game.title}`}
       >
-        {game.status === "available" ? "▶ INSERT COIN" : "COMING SOON"}
+        {game.status === "available" ? "▶ PLAY" : "COMING SOON"}
       </button>
     </div>
   );

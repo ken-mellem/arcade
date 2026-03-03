@@ -30,6 +30,7 @@ export interface SnakeState {
   score: number;
   foodEaten: number;
   level: number;
+  highScore: number;
   status: "idle" | "playing" | "paused" | "game-over";
 }
 
@@ -57,7 +58,7 @@ function buildInitialSnake(): Cell[] {
   );
 }
 
-export function createInitialState(): SnakeState {
+export function createInitialState(savedHighScore = 0): SnakeState {
   const snake = buildInitialSnake();
   return {
     snake,
@@ -67,6 +68,7 @@ export function createInitialState(): SnakeState {
     score: 0,
     foodEaten: 0,
     level: 0,
+    highScore: savedHighScore,
     status: "idle",
   };
 }
@@ -105,6 +107,7 @@ export function snakeReducer(
         score: 0,
         foodEaten: 0,
         level: 0,
+        highScore: state.highScore,
         status: "playing",
       };
     }
@@ -136,7 +139,12 @@ export function snakeReducer(
         newHead[1] < 0 ||
         newHead[1] >= BOARD_COLS
       ) {
-        return { ...state, direction: dir, status: "game-over" };
+        return {
+          ...state,
+          direction: dir,
+          highScore: Math.max(state.score, state.highScore),
+          status: "game-over",
+        };
       }
 
       // Self collision (ignore tail tip — it will move away)
@@ -144,7 +152,12 @@ export function snakeReducer(
       if (
         bodyWithoutTail.some(([r, c]) => r === newHead[0] && c === newHead[1])
       ) {
-        return { ...state, direction: dir, status: "game-over" };
+        return {
+          ...state,
+          direction: dir,
+          highScore: Math.max(state.score, state.highScore),
+          status: "game-over",
+        };
       }
 
       const ateFood =

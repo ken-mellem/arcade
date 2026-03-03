@@ -161,7 +161,10 @@ function randomMysteryInterval(): number {
   );
 }
 
-export function createInitialState(level = 1): SpaceInvadersState {
+export function createInitialState(
+  level = 1,
+  savedHighScore = 0,
+): SpaceInvadersState {
   const waveExtraY = Math.min(
     INVADER_WAVE_MAX_EXTRA,
     (level - 1) * INVADER_WAVE_EXTRA_Y,
@@ -184,7 +187,7 @@ export function createInitialState(level = 1): SpaceInvadersState {
     mysteryHit: null,
     shields: buildShields(),
     score: 0,
-    highScore: 0,
+    highScore: savedHighScore,
     lives: 3,
     level,
     bonusLifeAwarded: false,

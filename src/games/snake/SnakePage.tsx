@@ -11,6 +11,7 @@ import {
   GRID_COLOR,
 } from "./constants";
 import ArcadeScreen from "../../components/ArcadeScreen";
+import InitialsOverlay from "../../components/InitialsOverlay";
 import styles from "./SnakePage.module.css";
 
 function resolveVar(v: string): string {
@@ -22,7 +23,8 @@ function resolveVar(v: string): string {
 
 export default function SnakePage() {
   const navigate = useNavigate();
-  const { state, start, restart, pauseToggle } = useSnake();
+  const { state, start, restart, pauseToggle, pendingScore, submitInitials } =
+    useSnake();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // ── Render ──────────────────────────────────────────────
@@ -164,6 +166,10 @@ export default function SnakePage() {
             <span className={styles.statLabel}>LENGTH</span>
             <span className={styles.statValue}>{state.snake.length}</span>
           </div>
+          <div className={styles.statBlock}>
+            <span className={styles.statLabel}>BEST</span>
+            <span className={styles.statValueAlt}>{state.highScore}</span>
+          </div>
         </div>
 
         {/* Main screen */}
@@ -227,6 +233,9 @@ export default function SnakePage() {
           )}
         </div>
       </div>
+      {pendingScore !== null && (
+        <InitialsOverlay score={pendingScore} onSubmit={submitInitials} />
+      )}
     </div>
   );
 }

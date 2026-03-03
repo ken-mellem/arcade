@@ -39,6 +39,7 @@ export interface TetrisState {
   score: number;
   lines: number;
   level: number;
+  highScore: number;
   status: "idle" | "playing" | "paused" | "game-over";
   lockDelay: number; // countdown ticks remaining before lock
 }
@@ -113,7 +114,7 @@ function spawnPiece(type: TetrominoType): ActivePiece {
 
 // ── Initial State ──────────────────────────────────────────
 
-export function createInitialState(): TetrisState {
+export function createInitialState(savedHighScore = 0): TetrisState {
   return {
     board: createEmptyBoard(),
     active: null,
@@ -123,6 +124,7 @@ export function createInitialState(): TetrisState {
     score: 0,
     lines: 0,
     level: 0,
+    highScore: savedHighScore,
     status: "idle",
     lockDelay: 0,
   };
@@ -160,6 +162,7 @@ export function tetrisReducer(
     case "RESTART":
       return {
         ...createInitialState(),
+        highScore: state.highScore,
         status: "playing",
         active: spawnPiece(randomPiece()),
         next: randomPiece(),
@@ -228,7 +231,11 @@ export function tetrisReducer(
         : spawnPiece(state.next);
       const newNext = heldType ? state.next : randomPiece();
       if (!isValidPosition(state.board, newActive))
-        return { ...state, status: "game-over" };
+        return {
+          ...state,
+          highScore: Math.max(state.highScore, state.score),
+          status: "game-over",
+        };
       return {
         ...state,
         active: newActive,
@@ -278,6 +285,7 @@ function lockAndSpawn(state: TetrisState): TetrisState {
       score: newScore,
       lines: newLines,
       level: newLevel,
+      highScore: Math.max(state.highScore, newScore),
       status: "game-over",
     };
   }

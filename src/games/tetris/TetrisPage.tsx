@@ -11,6 +11,7 @@ import {
   type TetrominoType,
 } from "./constants";
 import ArcadeScreen from "../../components/ArcadeScreen";
+import InitialsOverlay from "../../components/InitialsOverlay";
 import styles from "./TetrisPage.module.css";
 
 // ── Canvas drawing helpers ──────────────────────────────────
@@ -93,7 +94,8 @@ function drawPiecePreview(
 
 export default function TetrisPage() {
   const navigate = useNavigate();
-  const { state, start, restart, pauseToggle } = useTetris();
+  const { state, start, restart, pauseToggle, pendingScore, submitInitials } =
+    useTetris();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // ── Render loop ─────────────────────────────────────────
@@ -225,6 +227,10 @@ export default function TetrisPage() {
             <span className={styles.statLabel}>LINES</span>
             <span className={styles.statValue}>{state.lines}</span>
           </div>
+          <div className={styles.statBlock}>
+            <span className={styles.statLabel}>BEST</span>
+            <span className={styles.statValueAlt}>{state.highScore}</span>
+          </div>
         </div>
 
         {/* Main game screen */}
@@ -297,6 +303,9 @@ export default function TetrisPage() {
           )}
         </div>
       </div>
+      {pendingScore !== null && (
+        <InitialsOverlay score={pendingScore} onSubmit={submitInitials} />
+      )}
     </div>
   );
 }

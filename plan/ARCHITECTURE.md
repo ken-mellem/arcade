@@ -64,6 +64,26 @@ src/
 2. Add an entry to `src/games/registry.ts` (`GameEntry`).
 3. Add a `<Route>` in `src/App.tsx`.
 4. Create a feature file in `/feature/` and a plan in `/plan/`.
+5. **Wire up the high score system** — see _High Scores_ section below.
+
+---
+
+## High Scores
+
+Every game **must** implement the shared high score system. Scores are persisted in
+`localStorage` via `src/lib/highScores.ts` — the single source of truth. No engine or
+page should touch `localStorage` directly.
+
+Required steps for each new game:
+
+1. Add `highScore: number` to the engine state; seed from `createInitialState(savedHighScore)`.
+2. Update `highScore: Math.max(state.highScore, newScore)` on every game-over branch; carry it through `RESTART`.
+3. In the hook, initialise with `() => createInitialState(loadScores(GAME_ID)[0]?.score ?? 0)`.
+4. Expose `pendingScore` / `submitInitials` from the hook (copy the pattern from any existing game).
+5. Render `<InitialsOverlay>` in the page root when `pendingScore !== null`.
+6. Show a `BEST` stat block in the HUD (`statValueAlt` CSS class — neon yellow).
+
+Full implementation details: [`/feature/HIGH_SCORES.md`](../feature/HIGH_SCORES.md)
 
 ---
 

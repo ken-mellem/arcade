@@ -34,6 +34,7 @@ import {
   MYSTERY_HIT_MS,
 } from "./constants";
 import ArcadeScreen from "../../components/ArcadeScreen";
+import InitialsOverlay from "../../components/InitialsOverlay";
 import styles from "./SpaceInvadersPage.module.css";
 
 // ── CSS var resolver ──────────────────────────────────────
@@ -149,7 +150,15 @@ function drawPlayerShip(
 
 export default function SpaceInvadersPage() {
   const navigate = useNavigate();
-  const { state, start, restart, nextLevel, pauseToggle } = useSpaceInvaders();
+  const {
+    state,
+    start,
+    restart,
+    nextLevel,
+    pauseToggle,
+    pendingScore,
+    submitInitials,
+  } = useSpaceInvaders();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Pre-generate fixed star positions (seeded via Array index for stable output)
@@ -545,6 +554,9 @@ export default function SpaceInvadersPage() {
           )}
         </div>
       </div>
+      {pendingScore !== null && (
+        <InitialsOverlay score={pendingScore} onSubmit={submitInitials} />
+      )}
     </div>
   );
 }

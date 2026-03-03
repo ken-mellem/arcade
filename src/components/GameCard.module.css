@@ -51,28 +51,17 @@
 
 /* Info block */
 .info {
-  padding: 12px 14px 6px;
+  padding: 10px 0 4px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
 }
 
 .title {
   font-size: 0.6rem;
   color: var(--accent, var(--color-neon-cyan));
   letter-spacing: 0.08em;
-}
-
-.description {
-  font-size: 0.38rem;
-  color: var(--color-text-muted);
-  line-height: 1.8;
-}
-
-.controls {
-  font-size: 0.3rem;
-  color: var(--color-text-dim);
-  line-height: 1.6;
+  padding: 0 14px;
 }
 
 /* Play button */
