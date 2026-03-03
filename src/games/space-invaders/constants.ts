@@ -41,8 +41,8 @@ export const INVADER_WALL_MARGIN = 8;
 /** ms between move steps — scales with alive count and level */
 export const INVADER_MOVE_BASE_MS = 700;
 export const INVADER_MOVE_MIN_MS = 40;
-/** Y threshold — if invaders pass this, game over */
-export const INVADER_FLOOR_Y = PLAYER_Y - PLAYER_H - 4;
+/** Y threshold — if invaders reach the player's top edge, game over */
+export const INVADER_FLOOR_Y = PLAYER_Y - PLAYER_H;
 /** Additional Y offset per wave for invader formation start */
 export const INVADER_WAVE_EXTRA_Y = INVADER_STEP_Y; // 30 px per wave
 /** Maximum additional Y — caps how far down the formation can start */
@@ -65,26 +65,26 @@ export const DEATH_ANIM_MS = 1200;
 export const SHIELD_COUNT = 4;
 /** Size of each destructible tile in pixels */
 export const SHIELD_TILE = 4;
-export const SHIELD_COLS = 13; // SHIELD_W / SHIELD_TILE
-export const SHIELD_ROWS = 8; // SHIELD_H / SHIELD_TILE
-export const SHIELD_W = SHIELD_COLS * SHIELD_TILE; // 52
-export const SHIELD_H = SHIELD_ROWS * SHIELD_TILE; // 32
+export const SHIELD_COLS = 11; // SHIELD_W / SHIELD_TILE
+export const SHIELD_ROWS = 7; // SHIELD_H / SHIELD_TILE
+export const SHIELD_W = SHIELD_COLS * SHIELD_TILE; // 44
+export const SHIELD_H = SHIELD_ROWS * SHIELD_TILE; // 28
 /** Top y of shields — sits well above the player cannon tip */
-export const SHIELD_Y = CANVAS_H - 116;
+export const SHIELD_Y = CANVAS_H - 110;
 
 /**
- * Initial tile occupancy for each shield — 13 cols × 8 rows.
- * 1 = solid tile, 0 = open (arch gap at bottom-centre).
+ * Initial tile occupancy for each shield — 11 cols × 7 rows.
+ * Rook / fortress silhouette: raised corner battlements, open arch at bottom.
+ * 1 = solid tile, 0 = open.
  */
 export const SHIELD_SHAPE: ReadonlyArray<ReadonlyArray<0 | 1>> = [
-  [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
-  [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-  [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+  [1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1], // battlements — raised corner towers
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // solid wall top
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1], // arch gap
+  [1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
 ];
 
 // ── Mystery ship ─────────────────────────────────────────────
@@ -95,6 +95,8 @@ export const MYSTERY_SPEED = 1.5;
 export const MYSTERY_POINTS = 100;
 export const MYSTERY_INTERVAL_MIN_MS = 15_000;
 export const MYSTERY_INTERVAL_MAX_MS = 30_000;
+/** Duration the UFO hit score popup / flash stays on screen in ms */
+export const MYSTERY_HIT_MS = 1500;
 
 // ── Colors (CSS var references for JS resolution) ────────────
 export const COLOR_PLAYER = "var(--color-neon-green)";

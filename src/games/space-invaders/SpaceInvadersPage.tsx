@@ -31,6 +31,7 @@ import {
   COLOR_SHIELD,
   INVADER_ROW_COLORS,
   DEATH_ANIM_MS,
+  MYSTERY_HIT_MS,
 } from "./constants";
 import ArcadeScreen from "../../components/ArcadeScreen";
 import styles from "./SpaceInvadersPage.module.css";
@@ -267,7 +268,51 @@ export default function SpaceInvadersPage() {
       ctx.fillRect(mx, MYSTERY_Y + 6, MYSTERY_W, MYSTERY_H - 8);
       ctx.fillRect(mx + 10, MYSTERY_Y, MYSTERY_W - 20, 6);
     }
+    // ── Mystery ship hit flash + score popup ───────────────────────
+    if (state.mysteryHit) {
+      const { x: hx, score: hScore, timer } = state.mysteryHit;
+      const progress = 1 - timer / MYSTERY_HIT_MS; // 0 → 1 as popup ages
+      const alpha = progress < 0.7 ? 1 : 1 - (progress - 0.7) / 0.3; // fade last 30%
+      const floatY = MYSTERY_Y - progress * 20; // float upward
 
+      // Starburst flash (only in first ~35% of duration)
+      if (progress < 0.35) {
+        const flashAlpha = (1 - progress / 0.35) * 0.9;
+        const r = 4 + progress * 40;
+        ctx.globalAlpha = flashAlpha;
+        ctx.strokeStyle = mysteryColor;
+        ctx.shadowColor = mysteryColor;
+        ctx.shadowBlur = 18;
+        ctx.lineWidth = 2;
+        for (let a = 0; a < 8; a++) {
+          const angle = (a / 8) * Math.PI * 2;
+          ctx.beginPath();
+          ctx.moveTo(
+            hx + Math.cos(angle) * r * 0.25,
+            MYSTERY_Y + 7 + Math.sin(angle) * r * 0.25,
+          );
+          ctx.lineTo(
+            hx + Math.cos(angle) * r,
+            MYSTERY_Y + 7 + Math.sin(angle) * r,
+          );
+          ctx.stroke();
+        }
+        ctx.shadowBlur = 0;
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = 1;
+      }
+
+      // Score label
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = mysteryColor;
+      ctx.shadowColor = mysteryColor;
+      ctx.shadowBlur = 12;
+      ctx.font = '8px "Press Start 2P"';
+      ctx.textAlign = "center";
+      ctx.fillText(`${hScore}`, hx, floatY);
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+    }
     // ── Invaders ──────────────────────────────────────────
     for (const row of state.invaders) {
       for (const inv of row) {
@@ -478,7 +523,6 @@ export default function SpaceInvadersPage() {
               <li className={styles.scoreRowPink}>— = 30 pts</li>
               <li className={styles.scoreRowCyan}>— = 20 pts</li>
               <li className={styles.scoreRowYellow}>— = 10 pts</li>
-              <li className={styles.scoreRowMystery}>UFO = ???</li>
             </ul>
           </div>
 

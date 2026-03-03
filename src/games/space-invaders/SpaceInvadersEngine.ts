@@ -47,6 +47,7 @@ import {
   MYSTERY_POINTS,
   MYSTERY_INTERVAL_MIN_MS,
   MYSTERY_INTERVAL_MAX_MS,
+  MYSTERY_HIT_MS,
   BONUS_LIFE_SCORE,
   DEATH_ANIM_MS,
   INVADER_WAVE_EXTRA_Y,
@@ -80,6 +81,14 @@ export interface MysteryShip {
   active: boolean;
 }
 
+export interface MysteryHit {
+  /** Centre-x of the ship when it was destroyed */
+  x: number;
+  score: number;
+  /** Remaining display time in ms */
+  timer: number;
+}
+
 export interface SpaceInvadersState {
   playerX: number;
   playerBullets: Bullet[];
@@ -99,6 +108,8 @@ export interface SpaceInvadersState {
   mysteryAcc: number;
   mysteryInterval: number;
   mysteryShip: MysteryShip | null;
+  /** Non-null while the UFO hit score popup is visible */
+  mysteryHit: MysteryHit | null;
   shields: Shield[];
   score: number;
   highScore: number;
@@ -168,6 +179,7 @@ export function createInitialState(level = 1): SpaceInvadersState {
     mysteryAcc: 0,
     mysteryInterval: randomMysteryInterval(),
     mysteryShip: null,
+    mysteryHit: null,
     shields: buildShields(),
     score: 0,
     highScore: 0,
@@ -256,22 +268,31 @@ export function spaceInvadersReducer(
       return state;
 
     case "TICK": {
+      // ── Always tick mystery hit popup (regardless of game status) ──
+      let mysteryHit = state.mysteryHit;
+      if (mysteryHit) {
+        const mhRemaining = mysteryHit.timer - action.dt;
+        mysteryHit =
+          mhRemaining <= 0 ? null : { ...mysteryHit, timer: mhRemaining };
+      }
+
       // ── Death animation countdown ──────────────────────
       if (state.status === "dying") {
         const remaining = state.deathTimer - action.dt;
         if (remaining <= 0) {
           return {
             ...state,
+            mysteryHit,
             deathTimer: 0,
             status: "playing",
             playerBullets: [],
             enemyBullets: [],
           };
         }
-        return { ...state, deathTimer: remaining };
+        return { ...state, mysteryHit, deathTimer: remaining };
       }
 
-      if (state.status !== "playing") return state;
+      if (state.status !== "playing") return { ...state, mysteryHit };
 
       const { dt, moveLeft, moveRight, shoot } = action;
 
@@ -343,16 +364,6 @@ export function spaceInvadersReducer(
           invaderOffsetX = nextX;
         }
 
-        // Check if any invader has reached the floor
-        const rows = aliveInvaders.map((inv) => inv.row);
-        const maxRow = Math.max(...rows);
-        if (
-          invaderOffsetY + maxRow * INVADER_STEP_Y + INVADER_H >=
-          INVADER_FLOOR_Y
-        ) {
-          return { ...state, status: "game-over" };
-        }
-
         // ── Invaders erode shield tiles they overlap ──────
         // Clone shield cell grids once; mark destroyed tiles
         const shieldCellsWorking = shields.map((sh) =>
@@ -402,6 +413,17 @@ export function spaceInvadersReducer(
             cells: shieldCellsWorking[si],
           }));
         }
+      }
+
+      // ── Per-tick floor check ────────────────────────────
+      // Game over the moment any invader's bottom edge touches the player
+      const invaderAtFloor = aliveInvaders.some(
+        (inv) =>
+          invaderOffsetY + inv.row * INVADER_STEP_Y + INVADER_H >=
+          INVADER_FLOOR_Y,
+      );
+      if (invaderAtFloor) {
+        return { ...state, mysteryHit, status: "game-over" };
       }
 
       // ── Enemy fire ─────────────────────────────────────
@@ -518,6 +540,11 @@ export function spaceInvadersReducer(
             bullet.y <= MYSTERY_Y + 14
           ) {
             score += MYSTERY_POINTS;
+            mysteryHit = {
+              x: mysteryShip.x + MYSTERY_W / 2,
+              score: MYSTERY_POINTS,
+              timer: MYSTERY_HIT_MS,
+            };
             mysteryShip = null;
             hit = true;
           }
@@ -634,6 +661,7 @@ export function spaceInvadersReducer(
           mysteryAcc,
           mysteryInterval,
           mysteryShip: null,
+          mysteryHit,
           shields,
           score,
           highScore: newHighScore,
@@ -664,6 +692,7 @@ export function spaceInvadersReducer(
             mysteryAcc,
             mysteryInterval,
             mysteryShip,
+            mysteryHit: null,
             shields,
             score,
             highScore: newHighScore,
@@ -689,6 +718,7 @@ export function spaceInvadersReducer(
           mysteryAcc,
           mysteryInterval,
           mysteryShip,
+          mysteryHit,
           shields,
           score,
           highScore: newHighScore,
@@ -716,6 +746,7 @@ export function spaceInvadersReducer(
         mysteryAcc,
         mysteryInterval,
         mysteryShip,
+        mysteryHit,
         shields,
         score,
         highScore: finalHighScore,
