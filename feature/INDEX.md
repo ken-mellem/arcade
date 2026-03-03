@@ -2,11 +2,12 @@
 
 Chronological log of all feature requests and their implementation status.
 
-| #   | Date       | Feature      | Status | File                                 |
-| --- | ---------- | ------------ | ------ | ------------------------------------ |
-| 1   | 2026-02-22 | Landing Page | ✅ Done | [LANDING_PAGE.md](./LANDING_PAGE.md) |
-| 2   | 2026-02-22 | Tetris       | ✅ Done | [TETRIS.md](./TETRIS.md)             |
-| 3   | 2026-02-22 | Snake        | ✅ Done | [SNAKE.md](./SNAKE.md)               |
+| #   | Date       | Feature        | Status | File                                     |
+| --- | ---------- | -------------- | ------ | ---------------------------------------- |
+| 1   | 2026-02-22 | Landing Page   | ✅ Done | [LANDING_PAGE.md](./LANDING_PAGE.md)     |
+| 2   | 2026-02-22 | Tetris         | ✅ Done | [TETRIS.md](./TETRIS.md)                 |
+| 3   | 2026-02-22 | Snake          | ✅ Done | [SNAKE.md](./SNAKE.md)                   |
+| 4   | 2026-03-03 | Space Invaders | ✅ Done | [SPACE_INVADERS.md](./SPACE_INVADERS.md) |
 
 ---
 

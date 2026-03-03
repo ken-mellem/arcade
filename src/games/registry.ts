@@ -34,4 +34,15 @@ export const GAMES: GameEntry[] = [
     status: "available",
     controls: "← → ↑ ↓  or  WASD  pause P",
   },
+  {
+    id: "space-invaders",
+    title: "SPACE INVADERS",
+    description:
+      "Defend Earth from waves of alien invaders. Shoot fast, dodge faster.",
+    route: "/games/space-invaders",
+    accentColor: "var(--color-neon-pink)",
+    glowVar: "--border-glow-pink",
+    status: "available",
+    controls: "← →  or  A D  move  SPACE fire  P pause",
+  },
 ];
