@@ -11,6 +11,7 @@ import {
   PLAYER_Y,
   PLAYER_W,
   PLAYER_H,
+  PLAYER_BULLET_W,
   PLAYER_BULLET_H,
   PLAYER_BULLET_SPEED,
   ENEMY_BULLET_SPEED,
@@ -42,6 +43,7 @@ import {
   SHIELD_ROWS,
   SHIELD_SHAPE,
   MYSTERY_W,
+  MYSTERY_H,
   MYSTERY_Y,
   MYSTERY_SPEED,
   MYSTERY_POINTS,
@@ -533,11 +535,16 @@ export function spaceInvadersReducer(
         // vs mystery ship
         if (!hit && mysteryShip) {
           const mx = mysteryShip.x;
+          // Full AABB — bullet rect vs saucer rect
+          // bullet occupies x: [bullet.x - PLAYER_BULLET_W/2, bullet.x + PLAYER_BULLET_W/2]
+          //                  y: [bullet.y, bullet.y + PLAYER_BULLET_H]
+          const bLeft = bullet.x - PLAYER_BULLET_W / 2;
+          const bRight = bullet.x + PLAYER_BULLET_W / 2;
           if (
-            bullet.x >= mx &&
-            bullet.x <= mx + MYSTERY_W &&
-            bullet.y >= MYSTERY_Y &&
-            bullet.y <= MYSTERY_Y + 14
+            bRight >= mx &&
+            bLeft <= mx + MYSTERY_W &&
+            bullet.y + PLAYER_BULLET_H >= MYSTERY_Y &&
+            bullet.y <= MYSTERY_Y + MYSTERY_H
           ) {
             score += MYSTERY_POINTS;
             mysteryHit = {
