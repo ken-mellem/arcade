@@ -1,6 +1,7 @@
 .bezel {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   background: #111118;
   border: 4px solid #222233;
   border-radius: 12px;
