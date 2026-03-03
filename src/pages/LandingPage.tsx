@@ -9,17 +9,9 @@ export default function LandingPage() {
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <h1 className={styles.logo}>
-            <span className="neon-green">ARCADE</span>
-            <span className={styles.logoSub}>HUB</span>
+            <span className="neon-green">ARCADE HUB</span>
           </h1>
           <p className={styles.tagline}>SELECT YOUR GAME</p>
-        </div>
-        {/* Marquee ticker */}
-        <div className={styles.marqueeWrap} aria-hidden>
-          <span className={styles.marqueeText}>
-            ★ INSERT COIN ★ HIGH SCORE ★ GAME OVER ★ PRESS START ★ PLAYER ONE ★
-            INSERT COIN ★ HIGH SCORE ★
-          </span>
         </div>
       </header>
 
