@@ -41,6 +41,7 @@
 .previewTitle {
   font-size: 1.4rem;
   letter-spacing: 0.1em;
+  text-align: center;
   color: var(--accent, var(--color-neon-cyan));
   text-shadow:
     0 0 10px var(--accent, var(--color-neon-cyan)),

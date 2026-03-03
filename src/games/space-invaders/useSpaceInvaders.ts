@@ -41,7 +41,7 @@ export function useSpaceInvaders(): UseSpaceInvadersReturn {
     lastTimeRef.current = timestamp;
 
     const s = stateRef.current;
-    if (s.status === "playing") {
+    if (s.status === "playing" || s.status === "dying") {
       const { left, right, shoot } = inputRef.current;
       dispatch({ type: "TICK", dt, moveLeft: left, moveRight: right, shoot });
       // Space-bar fires on press, not held — consume the flag after dispatching

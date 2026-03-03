@@ -9,7 +9,6 @@ import { invaderRect } from "./SpaceInvadersEngine";
 import {
   CANVAS_W,
   CANVAS_H,
-  PLAYER_W,
   PLAYER_H,
   PLAYER_Y,
   PLAYER_BULLET_W,
@@ -18,8 +17,9 @@ import {
   ENEMY_BULLET_H,
   INVADER_W,
   INVADER_H,
-  SHIELD_W,
-  SHIELD_H,
+  SHIELD_TILE,
+  SHIELD_COLS,
+  SHIELD_ROWS,
   MYSTERY_W,
   MYSTERY_H,
   MYSTERY_Y,
@@ -30,6 +30,7 @@ import {
   COLOR_MYSTERY,
   COLOR_SHIELD,
   INVADER_ROW_COLORS,
+  DEATH_ANIM_MS,
 } from "./constants";
 import ArcadeScreen from "../../components/ArcadeScreen";
 import styles from "./SpaceInvadersPage.module.css";
@@ -53,6 +54,15 @@ const SPRITE_TOP: ReadonlyArray<ReadonlyArray<0 | 1>> = [
   [0, 1, 0, 1, 1, 0, 1, 0],
 ];
 
+const SPRITE_TOP_B: ReadonlyArray<ReadonlyArray<0 | 1>> = [
+  [0, 1, 0, 0, 0, 0, 1, 0],
+  [0, 0, 1, 0, 0, 1, 0, 0],
+  [0, 1, 1, 1, 1, 1, 1, 0],
+  [1, 1, 0, 1, 1, 0, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 0, 1, 0, 0, 1, 0, 1],
+];
+
 const SPRITE_MID: ReadonlyArray<ReadonlyArray<0 | 1>> = [
   [0, 1, 0, 0, 0, 0, 1, 0],
   [1, 0, 1, 1, 1, 1, 0, 1],
@@ -60,6 +70,15 @@ const SPRITE_MID: ReadonlyArray<ReadonlyArray<0 | 1>> = [
   [1, 1, 0, 0, 0, 0, 1, 1],
   [0, 1, 0, 0, 0, 0, 1, 0],
   [1, 0, 0, 0, 0, 0, 0, 1],
+];
+
+const SPRITE_MID_B: ReadonlyArray<ReadonlyArray<0 | 1>> = [
+  [1, 0, 0, 0, 0, 0, 0, 1],
+  [0, 1, 0, 1, 1, 0, 1, 0],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 0, 0, 0, 0, 1, 1],
+  [0, 0, 1, 0, 0, 1, 0, 0],
+  [0, 1, 0, 0, 0, 0, 1, 0],
 ];
 
 const SPRITE_BOT: ReadonlyArray<ReadonlyArray<0 | 1>> = [
@@ -71,6 +90,15 @@ const SPRITE_BOT: ReadonlyArray<ReadonlyArray<0 | 1>> = [
   [1, 0, 0, 0, 0, 0, 0, 1],
 ];
 
+const SPRITE_BOT_B: ReadonlyArray<ReadonlyArray<0 | 1>> = [
+  [0, 0, 1, 1, 1, 1, 0, 0],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 0, 0, 1, 1, 0, 0, 1],
+  [1, 0, 1, 0, 0, 1, 0, 1],
+  [0, 0, 1, 0, 0, 1, 0, 0],
+  [0, 1, 0, 0, 0, 0, 1, 0],
+];
+
 function drawSprite(
   ctx: CanvasRenderingContext2D,
   sprite: ReadonlyArray<ReadonlyArray<0 | 1>>,
@@ -79,7 +107,6 @@ function drawSprite(
   w: number,
   h: number,
   color: string,
-  glow: string,
 ): void {
   const cols = sprite[0].length;
   const rows = sprite.length;
@@ -87,8 +114,6 @@ function drawSprite(
   const ph = h / rows;
 
   ctx.fillStyle = color;
-  ctx.shadowColor = glow;
-  ctx.shadowBlur = 6;
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
@@ -102,7 +127,6 @@ function drawSprite(
       }
     }
   }
-  ctx.shadowBlur = 0;
 }
 
 function drawPlayerShip(
@@ -111,19 +135,13 @@ function drawPlayerShip(
   y: number,
   color: string,
 ): void {
-  const x = cx - PLAYER_W / 2;
   ctx.fillStyle = color;
-  ctx.shadowColor = color;
-  ctx.shadowBlur = 10;
-
-  // Base bar
-  ctx.fillRect(x, y + PLAYER_H - 8, PLAYER_W, 8);
-  // Body
-  ctx.fillRect(x + 6, y + 4, PLAYER_W - 12, PLAYER_H - 4);
-  // Cannon tip
-  ctx.fillRect(x + PLAYER_W / 2 - 3, y, 6, 6);
-
-  ctx.shadowBlur = 0;
+  // Cannon tip (3 px wide, 4 px tall)
+  ctx.fillRect(cx - 2, y, 4, 4);
+  // Narrow body
+  ctx.fillRect(cx - 8, y + 4, 16, 6);
+  // Wide base (28 px)
+  ctx.fillRect(cx - 14, y + 10, 28, 6);
 }
 
 // ── Component ─────────────────────────────────────────────
@@ -192,34 +210,25 @@ export default function SpaceInvadersPage() {
     ctx.stroke();
     ctx.globalAlpha = 1;
 
-    // ── Shields ──────────────────────────────────────────
+    // ── Shields — tile-by-tile rendering ─────────────────
+    ctx.fillStyle = shieldColor;
+    ctx.shadowColor = shieldColor;
+    ctx.shadowBlur = 5;
     for (const sh of state.shields) {
-      if (sh.hp <= 0) continue;
-      const alpha = 0.2 + (sh.hp / 5) * 0.8;
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = shieldColor;
-      ctx.shadowColor = shieldColor;
-      ctx.shadowBlur = 8;
-
-      // Draw shield as a blocky arch shape using rects
-      const x = sh.x;
-      const y = sh.y;
-      const w = SHIELD_W;
-      const h = SHIELD_H;
-      const third = Math.floor(w / 3);
-
-      // Full bottom 2/3
-      ctx.fillRect(x, y + Math.floor(h * 0.4), w, Math.ceil(h * 0.6));
-      // Left pillar
-      ctx.fillRect(x, y, third, h);
-      // Right pillar
-      ctx.fillRect(x + w - third, y, third, h);
-      // Top arch
-      ctx.fillRect(x + third, y, w - third * 2, Math.floor(h * 0.5));
-
-      ctx.shadowBlur = 0;
-      ctx.globalAlpha = 1;
+      for (let r = 0; r < SHIELD_ROWS; r++) {
+        for (let c = 0; c < SHIELD_COLS; c++) {
+          if (sh.cells[r][c]) {
+            ctx.fillRect(
+              sh.x + c * SHIELD_TILE,
+              sh.y + r * SHIELD_TILE,
+              SHIELD_TILE,
+              SHIELD_TILE,
+            );
+          }
+        }
+      }
     }
+    ctx.shadowBlur = 0;
 
     // ── Player bullets ────────────────────────────────────
     ctx.fillStyle = playerBulletColor;
@@ -253,13 +262,10 @@ export default function SpaceInvadersPage() {
     if (state.mysteryShip) {
       const mx = Math.round(state.mysteryShip.x);
       ctx.fillStyle = mysteryColor;
-      ctx.shadowColor = mysteryColor;
-      ctx.shadowBlur = 14;
-      // Simple saucer shape
+      // Simple saucer shape — no glow
       ctx.fillRect(mx + 6, MYSTERY_Y + 2, MYSTERY_W - 12, MYSTERY_H - 4);
       ctx.fillRect(mx, MYSTERY_Y + 6, MYSTERY_W, MYSTERY_H - 8);
       ctx.fillRect(mx + 10, MYSTERY_Y, MYSTERY_W - 20, 6);
-      ctx.shadowBlur = 0;
     }
 
     // ── Invaders ──────────────────────────────────────────
@@ -273,23 +279,64 @@ export default function SpaceInvadersPage() {
         );
         const color = invaderColors[inv.row];
         const sprite =
-          inv.row === 0 ? SPRITE_TOP : inv.row <= 2 ? SPRITE_MID : SPRITE_BOT;
-        drawSprite(
-          ctx,
-          sprite,
-          rect.x,
-          rect.y,
-          INVADER_W,
-          INVADER_H,
-          color,
-          color,
-        );
+          inv.row === 0
+            ? state.invaderFrame === 0
+              ? SPRITE_TOP
+              : SPRITE_TOP_B
+            : inv.row <= 2
+              ? state.invaderFrame === 0
+                ? SPRITE_MID
+                : SPRITE_MID_B
+              : state.invaderFrame === 0
+                ? SPRITE_BOT
+                : SPRITE_BOT_B;
+        drawSprite(ctx, sprite, rect.x, rect.y, INVADER_W, INVADER_H, color);
       }
     }
 
     // ── Player ship ───────────────────────────────────────
-    if (state.status !== "game-over") {
+    if (state.status !== "game-over" && state.status !== "dying") {
       drawPlayerShip(ctx, state.playerX, PLAYER_Y - PLAYER_H, playerColor);
+    }
+
+    // ── Death explosion ────────────────────────────────────────
+    if (state.status === "dying") {
+      const phase = 1 - state.deathTimer / DEATH_ANIM_MS;
+      const cx = state.playerX;
+      const cy = PLAYER_Y - PLAYER_H / 2;
+      const r = 6 + phase * 26;
+      const explosionColor = phase < 0.5 ? "#ff6600" : "#ff0040";
+      ctx.strokeStyle = explosionColor;
+      ctx.shadowColor = explosionColor;
+      ctx.shadowBlur = 14;
+      ctx.lineWidth = 2;
+      // 8 main spokes
+      for (let a = 0; a < 8; a++) {
+        const angle = (a / 8) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(
+          cx + Math.cos(angle) * r * 0.25,
+          cy + Math.sin(angle) * r * 0.25,
+        );
+        ctx.lineTo(cx + Math.cos(angle) * r, cy + Math.sin(angle) * r);
+        ctx.stroke();
+      }
+      // 8 shorter secondary spokes offset by half a step
+      for (let a = 0; a < 8; a++) {
+        const angle = ((a + 0.5) / 8) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(
+          cx + Math.cos(angle) * r * 0.5,
+          cy + Math.sin(angle) * r * 0.5,
+        );
+        ctx.lineTo(
+          cx + Math.cos(angle) * r * 0.75,
+          cy + Math.sin(angle) * r * 0.75,
+        );
+        ctx.stroke();
+      }
+      ctx.shadowBlur = 0;
+      ctx.lineWidth = 1;
     }
 
     // ── Pause overlay ─────────────────────────────────────
@@ -368,15 +415,14 @@ export default function SpaceInvadersPage() {
           <div className={styles.livesBlock}>
             <span className={styles.statLabel}>LIVES</span>
             <div className={styles.livesIcons}>
-              {Array.from({ length: 3 }, (_, i) => (
-                <span
-                  key={i}
-                  className={styles.lifeIcon}
-                  data-active={i < state.lives ? "true" : "false"}
-                >
-                  ▲
-                </span>
-              ))}
+              {Array.from(
+                { length: Math.min(Math.max(state.lives, 0), 6) },
+                (_, i) => (
+                  <span key={i} className={styles.lifeIcon}>
+                    ▲
+                  </span>
+                ),
+              )}
             </div>
           </div>
         </div>

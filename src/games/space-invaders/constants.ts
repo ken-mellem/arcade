@@ -43,6 +43,10 @@ export const INVADER_MOVE_BASE_MS = 700;
 export const INVADER_MOVE_MIN_MS = 40;
 /** Y threshold — if invaders pass this, game over */
 export const INVADER_FLOOR_Y = PLAYER_Y - PLAYER_H - 4;
+/** Additional Y offset per wave for invader formation start */
+export const INVADER_WAVE_EXTRA_Y = INVADER_STEP_Y; // 30 px per wave
+/** Maximum additional Y — caps how far down the formation can start */
+export const INVADER_WAVE_MAX_EXTRA = INVADER_STEP_Y * 4; // 120 px
 
 // Points per invader row (row 0 = top)
 export const INVADER_POINTS: readonly number[] = [30, 20, 20, 10, 10];
@@ -51,13 +55,37 @@ export const INVADER_POINTS: readonly number[] = [30, 20, 20, 10, 10];
 export const ENEMY_FIRE_MIN_MS = 500;
 export const ENEMY_FIRE_MAX_MS = 1400;
 
+// ── Progression ──────────────────────────────────────────────
+/** Score threshold at which the player earns a bonus life (once per game) */
+export const BONUS_LIFE_SCORE = 1500;
+/** Duration of the player death animation in ms */
+export const DEATH_ANIM_MS = 1200;
+
 // ── Shields ──────────────────────────────────────────────────
 export const SHIELD_COUNT = 4;
-export const SHIELD_W = 52;
-export const SHIELD_H = 30;
-/** Center y of shields */
-export const SHIELD_Y = CANVAS_H - 96;
-export const SHIELD_HP_MAX = 5;
+/** Size of each destructible tile in pixels */
+export const SHIELD_TILE = 4;
+export const SHIELD_COLS = 13; // SHIELD_W / SHIELD_TILE
+export const SHIELD_ROWS = 8; // SHIELD_H / SHIELD_TILE
+export const SHIELD_W = SHIELD_COLS * SHIELD_TILE; // 52
+export const SHIELD_H = SHIELD_ROWS * SHIELD_TILE; // 32
+/** Top y of shields — sits well above the player cannon tip */
+export const SHIELD_Y = CANVAS_H - 116;
+
+/**
+ * Initial tile occupancy for each shield — 13 cols × 8 rows.
+ * 1 = solid tile, 0 = open (arch gap at bottom-centre).
+ */
+export const SHIELD_SHAPE: ReadonlyArray<ReadonlyArray<0 | 1>> = [
+  [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+  [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+  [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+];
 
 // ── Mystery ship ─────────────────────────────────────────────
 export const MYSTERY_W = 36;
