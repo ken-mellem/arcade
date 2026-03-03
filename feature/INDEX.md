@@ -9,6 +9,7 @@ Chronological log of all feature requests and their implementation status.
 | 3   | 2026-02-22 | Snake                | ✅ Done | [SNAKE.md](./SNAKE.md)                   |
 | 4   | 2026-03-03 | Space Invaders       | ✅ Done | [SPACE_INVADERS.md](./SPACE_INVADERS.md) |
 | 5   | 2026-03-03 | Per-Game High Scores | ✅ Done | [HIGH_SCORES.md](./HIGH_SCORES.md)       |
+| 6   | 2026-03-03 | Asteroids            | ✅ Done | [ASTEROIDS.md](./ASTEROIDS.md)           |
 
 ---
 

@@ -94,3 +94,37 @@ Full implementation details: [`/feature/HIGH_SCORES.md`](../feature/HIGH_SCORES.
 - **Accessible font sizes**: labels use rem fractions from `Press Start 2P`.
 - **No frameworks inside games**: engines are pure TypeScript, no React deps.
 - **Portable game state**: `useReducer` means game state is serializable/testable.
+
+---
+
+## Standard Game Page Layout
+
+**Decision:** Every game page uses the same three-column layout: left stat panel,
+`<ArcadeScreen>` canvas in the centre, right info panel. This is a hard convention.
+
+```
+┌──────────────┐  ┌────────────────────────────┐  ┌────────────────┐
+│ ← BACK      │  │  <ArcadeScreen>          │  │ CONTROLS       │
+│ SCORE ###  │  │  <canvas />               │  │ POINTS TABLE   │
+│ BEST  ###  │  │  </ArcadeScreen>          │  │ PAUSE / ACTION │
+│ WAVE  n    │  └────────────────────────────┘  └────────────────┘
+│ LIVES ▲▲▲ │
+└──────────────┘
+```
+
+**Left panel** — `BACK` button, `SCORE`, `BEST` (hi-score, always cyan), game-specific
+stats (wave/level/speed), `LIVES` icons.
+
+**Right panel** — `CONTROLS` key reference, game-specific scoring table, contextual
+action button (Pause / Resume / Restart / Next Wave).
+
+**Accent colour** — each game picks one neon CSS variable as its accent and uses it
+consistently across: `ArcadeScreen` `accent` prop, stat values, kbd labels, buttons,
+and the `GameCard` entry in `registry.ts`.
+
+| Game           | Accent                |
+| -------------- | --------------------- |
+| Tetris         | `--color-neon-cyan`   |
+| Snake          | `--color-neon-green`  |
+| Space Invaders | `--color-neon-pink`   |
+| Asteroids      | `--color-neon-yellow` |

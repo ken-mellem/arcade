@@ -45,4 +45,15 @@ export const GAMES: GameEntry[] = [
     status: "available",
     controls: "← →  or  A D  move  SPACE fire  P pause",
   },
+  {
+    id: "asteroids",
+    title: "ASTEROIDS",
+    description:
+      "Blast rocks to rubble. Survive the fragments. Dodge the saucer.",
+    route: "/games/asteroids",
+    accentColor: "var(--color-neon-yellow)",
+    glowVar: "--border-glow-yellow",
+    status: "available",
+    controls: "← → rotate  ↑ thrust  SPACE fire  P pause",
+  },
 ];

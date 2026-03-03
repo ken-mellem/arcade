@@ -29,9 +29,10 @@
   --glow-orange: 0 0 6px #ff6600, 0 0 20px #ff660066, 0 0 40px #ff660033;
 
   /* Border glows */
-  --border-glow-green: 0 0 8px #39ff1466, inset 0 0 8px #39ff1422;
-  --border-glow-cyan:  0 0 8px #00ffff66, inset 0 0 8px #00ffff22;
-  --border-glow-pink:  0 0 8px #ff00ff66, inset 0 0 8px #ff00ff22;
+  --border-glow-green:  0 0 8px #39ff1466, inset 0 0 8px #39ff1422;
+  --border-glow-cyan:   0 0 8px #00ffff66, inset 0 0 8px #00ffff22;
+  --border-glow-pink:   0 0 8px #ff00ff66, inset 0 0 8px #ff00ff22;
+  --border-glow-yellow: 0 0 8px #ffff0066, inset 0 0 8px #ffff0022;
 
   /* Tetromino colours */
   --tet-I: #00ffff;
