@@ -26,7 +26,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className={styles.footer}>
-        <span>© 2026 ARCADE HUB</span>
+        <span>AGENTIC TESTING PURPOSES</span>
         <span className={styles.blink}>□</span>
       </footer>
     </div>
