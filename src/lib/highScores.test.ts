@@ -66,7 +66,10 @@ describe("addScore — initials normalisation", () => {
 // ── addScore: double-submit regression ──────────────────────
 
 describe("addScore — duplicate call does not corrupt leaderboard", () => {
-  it("calling addScore twice with same score only inserts one entry of those initials", () => {
+  // addScore is a pure inserter: calling it twice inserts two entries.
+  // Deduplication is the hook's responsibility (ref-guard pattern).
+  // The critical regression here is that OTHER leaderboard entries are not wiped.
+  it("calling addScore twice inserts two entries — other entries remain intact", () => {
     addScore(GAME_ID, 500, "KBC");
     addScore(GAME_ID, 400, "DEF");
     addScore(GAME_ID, 300, "GHI");
@@ -77,11 +80,8 @@ describe("addScore — duplicate call does not corrupt leaderboard", () => {
 
     const scores = loadScores(GAME_ID);
     const amEntries = scores.filter((e) => e.initials === "AM");
-    // Only one entry should exist; the second call should not have re-inserted
-    // NOTE: addScore itself doesn't deduplicate — the guard lives in the hook.
-    // This test documents the behaviour so any future dedup logic is deliberate.
-    expect(amEntries.length).toBe(2); // honest: addScore is a pure inserter
-    // But critically: the other entrants must still be present
+    expect(amEntries.length).toBe(2);
+    // Regression: prior bug wiped all other entries on duplicate submit
     expect(scores.some((e) => e.initials === "KBC")).toBe(true);
     expect(scores.some((e) => e.initials === "DEF")).toBe(true);
   });
