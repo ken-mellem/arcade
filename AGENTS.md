@@ -1,7 +1,6 @@
 # AGENTS.md — Arcade Hub Agent Instructions
 
-This file provides instructions for AI coding agents working on the Arcade Hub project.
-It complements `.github/copilot-instructions.md`.
+Quick-start reference for AI coding agents. All authoritative rules and conventions are in **`.github/copilot-instructions.md`** — read that file first.
 
 ---
 
@@ -9,25 +8,38 @@ It complements `.github/copilot-instructions.md`.
 
 ```
 c:\git\arcade\
-├── .github/copilot-instructions.md   ← Copilot custom instructions
-├── AGENTS.md                          ← This file
+├── .github/
+│   ├── copilot-instructions.md        ← Authoritative rules & conventions
+│   └── prompts/
+│       ├── new-game.prompt.md         ← Full checklist for adding a game
+│       └── high-score.prompt.md       ← High score wiring guide
+├── AGENTS.md                          ← This file (quick-start, non-Copilot agents)
 ├── plan/
-│   └── ARCHITECTURE.md               ← Tech decisions, structure, extension guide
+│   └── ARCHITECTURE.md               ← Design decisions, page layout, accent table
 ├── feature/
-│   ├── INDEX.md                       ← Feature history (update when adding features)  
+│   ├── INDEX.md                       ← Feature history (update when adding features)
 │   ├── LANDING_PAGE.md
-│   └── TETRIS.md
+│   ├── TETRIS.md
+│   ├── SNAKE.md
+│   ├── SPACE_INVADERS.md
+│   ├── ASTEROIDS.md
+│   └── HIGH_SCORES.md
 ├── src/
 │   ├── main.tsx                       ← App entry point
 │   ├── App.tsx                        ← Route declarations
 │   ├── styles/
 │   │   ├── globals.css                ← Imported in main.tsx
 │   │   └── theme.css                  ← CSS vars — source of truth for all colors
-│   ├── components/                    ← Shared UI
-│   ├── pages/                         ← Route-level pages
+│   ├── components/                    ← Shared UI (ArcadeScreen, GameCard, InitialsOverlay, ScoreTable)
+│   ├── pages/                         ← Route-level pages (LandingPage)
+│   ├── lib/
+│   │   └── highScores.ts             ← Shared high score persistence (localStorage)
 │   └── games/
 │       ├── registry.ts                ← Add new games here
-│       └── tetris/                    ← Example game to reference
+│       ├── tetris/                    ← Reference: grid-based game
+│       ├── snake/                     ← Reference: loop-based game
+│       ├── space-invaders/
+│       └── asteroids/                 ← Reference: physics/vector game
 ├── index.html
 ├── package.json
 ├── tsconfig.json
@@ -47,17 +59,9 @@ npm run preview      # Preview production build
 
 ---
 
-## Task Checklist for Adding a New Game
+## Adding a New Game
 
-- [ ] Create `src/games/<name>/constants.ts`
-- [ ] Create `src/games/<name>/<Name>Engine.ts` (pure TS, no React)
-- [ ] Create `src/games/<name>/use<Name>.ts` (React hook)
-- [ ] Create `src/games/<name>/<Name>Page.tsx` + `.module.css`
-- [ ] Register in `src/games/registry.ts`
-- [ ] Add `<Route>` in `src/App.tsx`
-- [ ] Wire up the high score system (see `/plan/ARCHITECTURE.md` — _High Scores_ section)
-- [ ] Create `feature/<NAME>.md` doc (use the template below)
-- [ ] Update `feature/INDEX.md`
+Use the **`.github/prompts/new-game.prompt.md`** prompt — it contains the full ordered checklist, file templates, and build verification steps. High score wiring is in **`.github/prompts/high-score.prompt.md`**.
 
 ---
 
@@ -89,79 +93,6 @@ Always use `# Feature: <Title>`.
 
 ---
 
-## Important Constraints
+## Rules & Conventions
 
-1. **No backend** — this is a pure client-side app.
-2. **TypeScript strict mode** — no `any` without justification.
-3. **CSS Modules only** — no inline styles except for CSS custom property overrides via `style` prop.
-4. **Pure game engines** — files in `src/games/<name>/` except the Page and hook must import nothing from React.
-5. **Colors via CSS vars** — always use variables from `theme.css`.
-6. **Run `npm run build` after making changes** to verify no TypeScript or build errors.
-7. **Update `/feature/INDEX.md`** whenever a new feature is added.
-
----
-
-## Git Conventions
-
-### Commit Messages — Conventional Commits
-
-All commits MUST use the [Conventional Commits](https://www.conventionalcommits.org/) format:
-
-```
-<type>(<optional scope>): <short description>
-```
-
-| Type       | Use for                              |
-| ---------- | ------------------------------------ |
-| `feat`     | New feature or game                  |
-| `fix`      | Bug fix                              |
-| `chore`    | Tooling, deps, config, cleanup       |
-| `style`    | CSS / visual-only changes            |
-| `refactor` | Restructure without behaviour change |
-| `docs`     | Documentation only (plan/, feature/) |
-| `perf`     | Performance improvement              |
-| `test`     | Adding or fixing tests               |
-
-Examples:
-```
-feat(tetris): add 7-bag random piece generator
-fix(landing): correct card hover glow on Safari
-chore: upgrade vite to 5.5
-docs(feature): add SNAKE.md feature spec
-```
-
-### Branch Naming
-
-Branches follow the same type prefix as commits:
-
-```
-<type>/<short-kebab-description>
-```
-
-Examples:
-```
-feat/snake-game
-feat/tetris-high-scores
-fix/tetris-rotation-wallkick
-chore/upgrade-dependencies
-refactor/game-registry
-```
-
----
-
-## Code Style Quick Reference
-
-```typescript
-// ✅ Good
-import type { FC } from 'react'
-const MyComponent: FC<Props> = ({ value }) => { ... }
-
-// ✅ Good — engine function
-export function isValidPosition(board: Board, piece: Piece): boolean { ... }
-
-// ❌ Bad — React inside engine
-import { useEffect } from 'react' // never in *Engine.ts files
-
-// ✅ Good — CSS custom property override
-<div style={{ '--accent': 'var(--color-neon-pink)' } as React.CSSProperties}>
-```
+All coding standards, naming rules, CSS conventions, git commit format, branch naming, and constraints are in **`.github/copilot-instructions.md`**. Do not duplicate them here.

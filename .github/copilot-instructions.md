@@ -45,11 +45,7 @@ src/games/<gameName>/
 
 ### Adding a New Game
 
-1. Create the game folder under `src/games/<name>/`.
-2. Add a `GameEntry` to `src/games/registry.ts`.
-3. Add a `<Route>` in `src/App.tsx`.
-4. Create feature doc in `/feature/` and update `/feature/INDEX.md`.
-5. If the game requires architectural decisions, create a plan doc in `/plan/`.
+Use the **`.github/prompts/new-game.prompt.md`** prompt for the complete ordered checklist, file templates, and build verification steps. The high score wiring sub-task is covered in **`.github/prompts/high-score.prompt.md`**.
 
 ## CSS / Theming
 

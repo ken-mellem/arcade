@@ -22,32 +22,6 @@ canvas.  All games run client-side with no backend.
 
 ---
 
-## Project Structure
-
-```
-src/
-├── main.tsx                     # React root, BrowserRouter
-├── App.tsx                      # Route declarations
-├── styles/
-│   ├── globals.css              # Reset + base
-│   └── theme.css                # CSS vars: neon palette, animations, CRT
-├── components/
-│   ├── ArcadeScreen.tsx/.module.css   # CRT bezel wrapper
-│   └── GameCard.tsx/.module.css       # Clickable game card
-├── pages/
-│   └── LandingPage.tsx/.module.css    # Grid of GameCards + marquee
-└── games/
-    ├── registry.ts              # Typed list of all games
-    └── tetris/
-        ├── constants.ts         # Board dimensions, tetrominoes, colors
-        ├── TetrisEngine.ts      # Pure logic: board, pieces, scoring
-        ├── useTetris.ts         # RAF game loop + keyboard hook
-        ├── TetrisPage.tsx       # Route page: canvas + HUD layout
-        └── TetrisPage.module.css
-```
-
----
-
 ## Routing
 
 | Path            | Component     | Notes                |
@@ -60,30 +34,15 @@ src/
 
 ## Extending — Adding a New Game
 
-1. Create `src/games/<name>/` folder with engine, hook, page files.
-2. Add an entry to `src/games/registry.ts` (`GameEntry`).
-3. Add a `<Route>` in `src/App.tsx`.
-4. Create a feature file in `/feature/` and a plan in `/plan/`.
-5. **Wire up the high score system** — see _High Scores_ section below.
+Follow **`.github/prompts/new-game.prompt.md`** for the full ordered checklist, file templates, and build verification. High score wiring is in **`.github/prompts/high-score.prompt.md`**.
 
 ---
 
 ## High Scores
 
-Every game **must** implement the shared high score system. Scores are persisted in
-`localStorage` via `src/lib/highScores.ts` — the single source of truth. No engine or
-page should touch `localStorage` directly.
-
-Required steps for each new game:
-
-1. Add `highScore: number` to the engine state; seed from `createInitialState(savedHighScore)`.
-2. Update `highScore: Math.max(state.highScore, newScore)` on every game-over branch; carry it through `RESTART`.
-3. In the hook, initialise with `() => createInitialState(loadScores(GAME_ID)[0]?.score ?? 0)`.
-4. Expose `pendingScore` / `submitInitials` from the hook (copy the pattern from any existing game).
-5. Render `<InitialsOverlay>` in the page root when `pendingScore !== null`.
-6. Show a `BEST` stat block in the HUD (`statValueAlt` CSS class — neon yellow).
-
-Full implementation details: [`/feature/HIGH_SCORES.md`](../feature/HIGH_SCORES.md)
+Every game must implement the shared high score system. The API is in `src/lib/highScores.ts`.
+For full integration steps and code patterns, follow **`.github/prompts/high-score.prompt.md`**.
+For context on what was built and the storage format, see [`/feature/HIGH_SCORES.md`](../feature/HIGH_SCORES.md).
 
 ---
 
