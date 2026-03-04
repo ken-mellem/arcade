@@ -13,7 +13,7 @@ interface Props {
 const SLOTS = [0, 1, 2] as const;
 
 const InitialsOverlay: FC<Props> = ({ score, onSubmit }) => {
-  const [chars, setChars] = useState<[string, string, string]>(["_", "_", "_"]);
+  const [chars, setChars] = useState<[string, string, string]>(["A", "A", "A"]);
   const refs = [
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
@@ -81,12 +81,12 @@ const InitialsOverlay: FC<Props> = ({ score, onSubmit }) => {
     };
 
   const handleSubmit = () => {
-    const initials = chars.map((c) => (c === "_" ? "_" : c)).join("");
-    if (initials.replace(/_/g, "").length === 0) return;
+    const initials = chars.filter((c) => c !== "_").join("");
+    if (initials.length === 0) return;
     onSubmit(initials);
   };
 
-  const allFilled = chars.every((c) => c !== "_");
+  const anyFilled = chars.some((c) => c !== "_");
 
   return (
     <div className={styles.overlay} onKeyDown={(e) => e.stopPropagation()}>
@@ -117,7 +117,7 @@ const InitialsOverlay: FC<Props> = ({ score, onSubmit }) => {
         <button
           className={styles.submitBtn}
           onClick={handleSubmit}
-          disabled={!allFilled}
+          disabled={!anyFilled}
         >
           ▶ SUBMIT
         </button>
