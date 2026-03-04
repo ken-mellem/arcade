@@ -25,7 +25,8 @@ isTopScore(gameId: string, score: number): boolean
 
 addScore(gameId: string, score: number, initials: string): HighScoreEntry[]
 // Inserts, sorts, persists, returns updated list.
-// Initials are normalised to 3 uppercase chars, padded with "_".
+// Initials are normalised to 1-3 uppercase alphanumeric chars.
+// Empty/invalid initials are rejected — the existing list is returned unchanged.
 ```
 
 Storage key format: `arcade-hs-{gameId}` (e.g. `arcade-hs-tetris`).
@@ -94,6 +95,8 @@ const [state, dispatch] = useReducer(reducer, undefined, () =>
 );
 
 const [pendingScore, setPendingScore] = useState<number | null>(null);
+const pendingRef = useRef<number | null>(null);
+pendingRef.current = pendingScore;
 
 // Detect game-over and check if score qualifies
 useEffect(() => {
@@ -102,15 +105,16 @@ useEffect(() => {
   }
 }, [state.phase, state.score]);
 
-const submitInitials = useCallback(
-  (initials: string) => {
-    if (pendingScore === null) return;
-    addScore(GAME_ID, pendingScore, initials);
-    setPendingScore(null);
-    dispatch({ type: "RESTART" });
-  },
-  [pendingScore],
-);
+// IMPORTANT: use the ref-guard pattern — do NOT close over pendingScore state.
+// A second invocation before the render settles would still see the old state value.
+const submitInitials = useCallback((initials: string) => {
+  if (pendingRef.current === null) return;
+  const score = pendingRef.current;
+  pendingRef.current = null; // synchronously invalidate before async state update
+  addScore(GAME_ID, score, initials);
+  setPendingScore(null);
+  dispatch({ type: "RESTART" });
+}, []);
 ```
 
 Return `pendingScore` and `submitInitials` from the hook.
@@ -159,6 +163,7 @@ In the left stats panel of `*Page.tsx`:
 - [ ] Every game-over branch updates `highScore: Math.max(state.highScore, state.score)`
 - [ ] `RESTART` action carries `highScore` through
 - [ ] Hook seeds from `loadScores(GAME_ID)[0]?.score ?? 0`
+- [ ] Hook uses `pendingRef` + ref-guard pattern in `submitInitials` (see Point 4 template)
 - [ ] Hook exposes `pendingScore` and `submitInitials`
 - [ ] Page renders `<InitialsOverlay>` when `pendingScore !== null`
 - [ ] Enter-restart is blocked while overlay is active
@@ -168,4 +173,4 @@ In the left stats panel of `*Page.tsx`:
 
 ## Verify
 
-Run `npm run build` after completing all points. The build must pass with zero errors.
+Run `npm run build && npm test` after completing all points. Both must pass with zero errors.
