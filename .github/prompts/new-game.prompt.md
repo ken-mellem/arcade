@@ -1,5 +1,5 @@
 ---
-mode: agent
+agent: agent
 description: Full checklist and file templates for adding a new game to Arcade Hub.
 ---
 
@@ -179,7 +179,7 @@ One-paragraph description.
 Then add a row to **`feature/INDEX.md`**:
 
 ```markdown
-| N | YYYY-MM-DD | $GAME_NAME | ✅ Done | [$GAME_NAME.md](./$GAME_NAME.md) |
+| N | YYYY-MM-DD | $GAME_NAME | ✅ Done | $GAME_NAME.md |
 ```
 
 ---

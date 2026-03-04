@@ -1,5 +1,5 @@
 ---
-mode: agent
+agent: agent
 description: Step-by-step guide for wiring the shared high score system into any Arcade Hub game.
 ---
 
