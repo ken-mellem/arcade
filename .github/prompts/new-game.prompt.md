@@ -70,16 +70,23 @@ const [state, dispatch] = useReducer(reducer, undefined, () =>
 
 // pendingScore is non-null when the initials overlay should be shown
 const [pendingScore, setPendingScore] = useState<number | null>(null);
+const pendingRef = useRef<number | null>(null);
+pendingRef.current = pendingScore;
 
 // Detect qualifying game-over in a useEffect watching state
 // Call submitInitials to save and clear
-const submitInitials = (initials: string) => {
-  if (pendingScore !== null) {
-    addScore(GAME_ID, pendingScore, initials);
-    setPendingScore(null);
-    dispatch({ type: "RESTART" });
-  }
-};
+//
+// IMPORTANT: use the ref-guard pattern. Do NOT close over pendingScore state —
+// a rapid double-invocation (e.g. Enter key + button click) will fire before the
+// state update settles, passing the null-check twice and corrupting the leaderboard.
+const submitInitials = useCallback((initials: string) => {
+  if (pendingRef.current === null) return;
+  const score = pendingRef.current;
+  pendingRef.current = null; // synchronously invalidate before async state update
+  addScore(GAME_ID, score, initials);
+  setPendingScore(null);
+  dispatch({ type: "RESTART" });
+}, []);
 
 // Block Enter-restart while overlay is active
 ```
@@ -140,13 +147,13 @@ Follow **`.github/prompts/high-score.prompt.md`** to verify all six integration 
 
 ---
 
-## Step 5 — Verify the build
+## Step 5 — Verify the build and tests
 
 ```bash
-npm run build
+npm run build && npm test
 ```
 
-Fix all TypeScript and build errors before proceeding. Do not skip this step.
+Fix all TypeScript, build, and test errors before proceeding. Do not skip this step.
 
 ---
 
@@ -194,6 +201,7 @@ Then add a row to **`feature/INDEX.md`**:
 - [ ] Entry added to `src/games/registry.ts`
 - [ ] Route added to `src/App.tsx`
 - [ ] High score system wired (all 6 points from `high-score.prompt.md`)
-- [ ] `npm run build` passes with zero errors
+- [ ] `submitInitials` uses the ref-guard pattern (see `high-score.prompt.md` Point 4)
+- [ ] `npm run build && npm test` passes with zero errors
 - [ ] `feature/$GAME_NAME.md` created
 - [ ] `feature/INDEX.md` updated

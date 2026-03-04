@@ -52,7 +52,18 @@ it but must not repeat it. Duplication is a maintenance hazard: the copies drift
 There must be one authoritative rules file. Every other file either defers to it or
 contains genuinely unique content.
 
-### P3 — Task-specific prompt files for recurring work
+### P3 — Shared-library changes include test coverage
+
+Any file under `src/lib/` that changes must have a corresponding addition or update to
+its `.test.ts` file. Engine files (`*Engine.ts`) are pure reducers and should be tested
+when new behaviour is added. Cross-layer contracts (e.g. initials format between
+`InitialsOverlay` and `highScores.ts`) must be made explicit — either as a named constant
+or a documented type — and covered by at least one test that spans the boundary.
+
+Check that `npm test` is referenced as a verification step in every prompt file that
+touches shared libraries.
+
+### P4 — Task-specific prompt files for recurring work
 
 Any task that agents are asked to perform repeatedly (add a new module, wire a shared
 feature, scaffold a component, migrate APIs, release prep) should have a dedicated
@@ -62,17 +73,17 @@ prompt file. Preferred location: `.github/prompts/`. These prompts must be:
 - Actionable (ordered steps + concrete code patterns, not vague descriptions)
 - Verifiable (end with a build/test/lint/check command)
 
-### P4 — Thin quick-start for non-Copilot agents
+### P5 — Thin quick-start for non-Copilot agents
 
 `AGENTS.md` (or equivalent) should contain only: repo layout, dev commands, and
 pointers to authoritative files. It must not duplicate rules or git conventions.
 
-### P5 — Reference docs are focused
+### P6 — Reference docs are focused
 
 Architecture and feature-history docs should contain only durable reference content
 (decisions, rationale, history, diagrams), not operational runbooks.
 
-### P6 — No stale content
+### P7 — No stale content
 
 File trees, component lists, and feature inventories must reflect the actual repo.
 Outdated examples mislead agents into making wrong assumptions.

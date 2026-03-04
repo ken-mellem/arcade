@@ -111,6 +111,32 @@ chore/upgrade-dependencies
 refactor/game-registry
 ```
 
+## Testing
+
+- Test runner: **Vitest** (`npm test` / `npm run test:watch`).
+- Environment: `jsdom` with an in-memory `localStorage` mock in `src/test/setup.ts`.
+- Test files: co-located as `<name>.test.ts` beside the source file they cover.
+- **Shared library files (`src/lib/`) MUST have unit test coverage.** Any change to a shared library must include or update tests.
+- Game engines (`*Engine.ts`) are pure reducers — they are straightforward to unit-test and should be tested when new behaviour is added.
+- The CI workflow (`.github/workflows/ci.yml`) runs `npm run build` and `npm test` on every PR. Both must pass before merge.
+
+### Safe `submitInitials` pattern
+
+All game hooks that call `addScore` must use the **ref-guard** pattern to prevent double-invocation before a re-render settles:
+
+```typescript
+const submitInitials = useCallback((initials: string) => {
+  if (pendingRef.current === null) return;
+  const score = pendingRef.current;
+  pendingRef.current = null; // guard: prevent double-invocation before re-render
+  addScore(GAME_ID, score, initials);
+  setPendingScore(null);
+  dispatch({ type: "RESTART" });
+}, []);
+```
+
+Do NOT close over `pendingScore` state in this callback — by the time the second invocation fires, state has not yet updated.
+
 ## What to Avoid
 
 - Do NOT add any backend, server, or database tooling.
