@@ -47,7 +47,7 @@ export function isTopScore(gameId: string, score: number): boolean {
 
 /**
  * Insert a new entry, keep best MAX_ENTRIES, persist, and return the updated list.
- * Initials are trimmed, padded with underscores to exactly 3 chars, uppercased.
+ * Initials are uppercased, stripped of non-alphanumeric chars, and capped at 3 chars.
  */
 export function addScore(
   gameId: string,
@@ -56,9 +56,12 @@ export function addScore(
 ): HighScoreEntry[] {
   const clean = initials
     .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "_")
-    .slice(0, 3)
-    .padEnd(3, "_");
+    .replace(/[^A-Z0-9]/g, "")
+    .slice(0, 3);
+
+  if (clean.length === 0) {
+    return loadScores(gameId);
+  }
 
   const existing = loadScores(gameId);
   const updated: HighScoreEntry[] = [...existing, { initials: clean, score }]

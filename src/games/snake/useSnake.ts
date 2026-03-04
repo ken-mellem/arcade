@@ -117,7 +117,9 @@ export function useSnake(): UseSnakeReturn {
 
   const submitInitials = useCallback((initials: string) => {
     if (pendingRef.current === null) return;
-    addScore(GAME_ID, pendingRef.current, initials);
+    const score = pendingRef.current;
+    pendingRef.current = null; // guard: prevent double-invocation before re-render
+    addScore(GAME_ID, score, initials);
     setPendingScore(null);
     dispatch({ type: "RESTART" });
   }, []);
